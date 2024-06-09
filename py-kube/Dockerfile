@@ -8,12 +8,14 @@ ARG KUBECTL_VERSION
 RUN apt-get update -y \
  && apt-get install -y vim \
                        curl \
+                       tree \
                        dnsutils \
                        apt-transport-https \
                        ca-certificates \
                        netcat-openbsd \
                        redis \
-                       gpg
+                       gpg \
+                       bsdextrautils # for column
 
 # Install kubectl (requires curl)
 RUN mkdir -p -m 755 /etc/apt/keyrings \

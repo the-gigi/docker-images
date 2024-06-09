@@ -9,11 +9,13 @@ This repository contains the Docker image `g1g1/py-kube`, which is built for bot
 - **Tools Included**:
   - Vim
   - Curl
+  - Tree
   - DNS utilities (`dnsutils`)
   - HTTPS support (`apt-transport-https`, `ca-certificates`)
   - Netcat (`netcat-openbsd`)
   - Redis
   - Kubernetes CLI (`kubectl`)
+  - BSD extra utilities (`bsdextrautils`)
   - Python packages:
     - `kubernetes`
     - `httpie`
