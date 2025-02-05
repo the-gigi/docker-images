@@ -31,4 +31,16 @@ RUN pip install kubernetes \
                 httpie     \
                 ipython
 
-CMD bash
+# Install mc (MinIO Client) for the correct architecture (no package manager support)
+RUN ARCH=$(dpkg --print-architecture) && \
+    if [ "$ARCH" = "amd64" ]; then \
+        MC_URL="https://dl.min.io/client/mc/release/linux-amd64/mc"; \
+    elif [ "$ARCH" = "arm64" ]; then \
+        MC_URL="https://dl.min.io/client/mc/release/linux-arm64/mc"; \
+    else \
+        echo "Unsupported architecture: $ARCH"; exit 1; \
+    fi && \
+    curl -fsSL "$MC_URL" -o /usr/local/bin/mc && \
+    chmod +x /usr/local/bin/mc
+
+CMD ["bash"]

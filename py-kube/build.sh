@@ -1,6 +1,6 @@
-BASE_IMAGE=python:3.12-slim
-VERSION=0.5
-KUBECTL_VERSION=1.30
+BASE_IMAGE=python:3.13-slim
+VERSION=0.6
+KUBECTL_VERSION=1.32
 
 echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
 
