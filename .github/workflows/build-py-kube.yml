@@ -26,7 +26,9 @@ jobs:
 
       - name: Get version from build.sh
         id: get_version
-        run: echo "VERSION=$(grep VERSION= py-kube/build.sh | cut -d'=' -f2)" >> $GITHUB_OUTPUT
+        run: |
+          VERSION=$(grep ^VERSION= py-kube/build.sh | cut -d'=' -f2)
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build and push
         uses: docker/build-push-action@v6
