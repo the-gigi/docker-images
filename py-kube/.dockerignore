@@ -1,0 +1,17 @@
+# Git files
+.git
+.gitignore
+
+# Documentation
+README.md
+
+# Build scripts
+build.sh
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Logs
+*.log

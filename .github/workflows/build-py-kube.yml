@@ -1,0 +1,61 @@
+name: Build and Push py-kube Image
+
+on:
+  push:
+    paths:
+      - 'py-kube/**'
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get version from build.sh
+        id: get_version
+        run: echo "VERSION=$(grep VERSION= py-kube/build.sh | cut -d'=' -f2)" >> $GITHUB_OUTPUT
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./py-kube
+          file: ./py-kube/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          build-args: |
+            BASE_IMAGE=python:3.13-slim@sha256:21e39cf1815802d4c6f89a0d3a166cc67ce58f95b6d1639e68a394c99310d2e5
+            KUBECTL_VERSION=1.32
+          tags: |
+            g1g1/py-kube:${{ steps.get_version.outputs.VERSION }}
+            g1g1/py-kube:latest
+          labels: |
+            org.opencontainers.image.created=${{ github.event.repository.updated_at }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.licenses=MIT
+
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        with:
+          image-ref: docker.io/g1g1/py-kube:${{ steps.get_version.outputs.VERSION }}
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
