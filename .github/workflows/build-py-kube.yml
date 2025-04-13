@@ -3,7 +3,8 @@ name: Build and Push py-kube Image
 on:
   push:
     paths:
-      - 'py-kube/**'
+      - 'py-kube/Dockerfile'
+      - 'py-kube/.dockerignore'
     branches: [ main ]
   workflow_dispatch:
 
